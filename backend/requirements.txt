@@ -1,0 +1,11 @@
+# Main Architecture
+sqlmodel
+fastapi
+uvicorn
+
+# Testing
+pytest
+httpx
+
+# Environment Vars
+python-dotenv
