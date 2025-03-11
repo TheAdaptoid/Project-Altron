@@ -12,10 +12,6 @@ backend/
 │   ├── test_conversations.py   # Test cases for conversations
 ```
 
-# Dependency Diagram
-
-![Dependency Diagram](diagram.png)
-
 # Technology Stack
 
 - **Language**: [Python](https://www.python.org/)
