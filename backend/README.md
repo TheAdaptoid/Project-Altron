@@ -70,6 +70,10 @@ The decision to use `PATCH` instead of `PUT` was made with the assumption and ex
 
 # Database and Model Reference
 
+## UML Diagram
+
+![UML](../assets/UML.png)
+
 ## Conversation
 
 Represents a conversation between the user and the agent.
@@ -81,6 +85,17 @@ Serves as the main foriegn key of `Messages` to link them together.
 | title | str | True | Title of the conversation |
 | created_at | datetime | False | Timestamp of creation |
 | updated_at | datetime | False | Timestamp of last update |
+
+## Message
+
+Represents a message from either the user or the agent.
+
+| Field | Type | Mutable |  Description |
+| ----- | ---- | ------- | ------------ |
+| id | int | False | Primary key |
+| conversation_id | int | False | Foreign key to `Conversation` |
+| content | str | True | Content of the message |
+| created_at | datetime | False | Timestamp of creation |
 
 # Logging Reference
 

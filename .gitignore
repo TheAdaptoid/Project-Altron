@@ -1,6 +1,7 @@
 # Extras
 .vscode
 *.db
+*.drawio
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
