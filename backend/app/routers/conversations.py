@@ -9,6 +9,9 @@ for database sessions. HTTP exceptions are raised for error handling when
 conversations are not found or when request validation fails.
 """
 
+# Standard Libraries
+from collections.abc import Sequence
+
 # External Libraries
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
@@ -73,7 +76,12 @@ def read_conversations(skip: int = 0, limit: int = 10, db: Session = Depends(get
     Returns:
         list[models.Conversation]: The list of conversations.
     """
-    return db.exec(select(models.ConversationTable).offset(skip).limit(limit)).all()
+    conversations: Sequence[models.ConversationTable] = db.exec(select(models.ConversationTable).offset(skip).limit(limit)).all()
+    
+    # Sort the conversations by update time
+    conversations = sorted(conversations, key=lambda c: c.updated_at, reverse=True)
+    
+    return conversations
 
 
 @router.get("/{conversation_id}", response_model=models.ConversationRead)

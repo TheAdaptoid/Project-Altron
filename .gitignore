@@ -2,6 +2,8 @@
 .vscode
 *.db
 *.drawio
+tsconfig.json
+*.js
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -12,12 +12,16 @@ backend/
 │   ├── test_conversations.py   # Test cases for conversations
 ```
 
+<br>
+
 # Technology Stack
 
 - **Language**: [Python](https://www.python.org/)
 - **Framework**: [FastAPI](https://fastapi.tiangolo.com/)
 - **Database**: [SQLite](https://www.sqlite.org/)
 - **Testing**: [pytest](https://docs.pytest.org/en/latest/)
+
+<br>
 
 # Usage Instructions
 
@@ -33,12 +37,14 @@ Run the following command to start the application locally (on linux):
 
 ```bash
 cd backend
-. full_setup.sh
+. setup.sh
 ```
 
 ## 3. Interact with the API
 
 Go to [http://localhost:8000/docs](http://localhost:8000/docs) to view the API documentation.
+
+<br>
 
 # Design Decisions
 
@@ -54,15 +60,19 @@ Similiar to the choice to use FastAPI, SQLite was chosen for its simplicity and 
 
 The decision to use `PATCH` instead of `PUT` was made with the assumption and expectation that data models would only ever have a few mutable fields and not require the entire object to be replaced. Thus `PATCH` was chosen to align with this expectation.
 
+<br>
+
 # API Reference
 
-| Endpoint | Method | Description |
-| -------- | ------ | ----------- |
-| /conversation         | POST   | Create a new conversation |
-| /conversation         | GET    | Retrieve all existing conversations |
-| /conversation/{id}    | GET    | Retrieve an existing conversation |
-| /conversation/{id}    | PATCH    | Update an existing conversation |
-| /conversation/{id}    | DELETE | Delete an existing conversation, and **all** associated messages |
+| Endpoint           | Method | Description                                                      |
+| ------------------ | ------ | ---------------------------------------------------------------- |
+| /conversation      | POST   | Create a new conversation                                        |
+| /conversation      | GET    | Retrieve all existing conversations                              |
+| /conversation/{id} | GET    | Retrieve an existing conversation                                |
+| /conversation/{id} | PATCH  | Update an existing conversation                                  |
+| /conversation/{id} | DELETE | Delete an existing conversation, and **all** associated messages |
+
+<br>
 
 # Database and Model Reference
 
@@ -75,24 +85,26 @@ The decision to use `PATCH` instead of `PUT` was made with the assumption and ex
 Represents a conversation between the user and the agent.
 Serves as the main foriegn key of `Messages` to link them together.
 
-| Field | Type | Mutable |  Description |
-| ----- | ---- | ------- | ------------ |
-| id | int | False | Primary key |
-| title | str | True | Title of the conversation |
-| created_at | datetime | False | Timestamp of creation |
-| updated_at | datetime | False | Timestamp of last update |
+| Field      | Type     | Mutable | Description               |
+| ---------- | -------- | ------- | ------------------------- |
+| id         | int      | False   | Primary key               |
+| title      | str      | True    | Title of the conversation |
+| created_at | datetime | False   | Timestamp of creation     |
+| updated_at | datetime | False   | Timestamp of last update  |
 
 ## Message
 
 Represents a message from either the user or the agent.
 
-| Field | Type | Mutable |  Description |
-| ----- | ---- | ------- | ------------ |
-| id | int | False | Primary key |
-| conversation_id | int | False | Foreign key to `Conversation` |
-| content | str | True | Content of the message |
-| created_at | datetime | False | Timestamp of creation |
+| Field           | Type     | Mutable | Description                   |
+| --------------- | -------- | ------- | ----------------------------- |
+| id              | int      | False   | Primary key                   |
+| conversation_id | int      | False   | Foreign key to `Conversation` |
+| content         | str      | True    | Content of the message        |
+| created_at      | datetime | False   | Timestamp of creation         |
 
-# Logging Reference
+<br>
 
 # Development Notes and Future Improvements
+
+- Start logging events.
