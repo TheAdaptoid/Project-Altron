@@ -2,17 +2,36 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles/main.css" />
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/conversation_pane.css" />
+  <title>Document</title>
+
+  <!-- <script src="scripts/conversations.js"></script> -->
+  <script type="module" src="scripts/conversation_card.js"></script>
 </head>
 
 <body>
-    <div id="app">
-        <label for="title">Title</label>
+  <!-- Conversation Pane -->
+  <section class="conversation-panel" id="conversation-panel">
+
+    <!-- Conversation Pane Header -->
+    <div class="conversation-start-div">
+      <h3>Start Conversation</h3>
+      <button id="start-conversation-button" class="standard-button">
+        +
+      </button>
     </div>
+
+    <!-- Conversation List -->
+    <div class="conversation-list" id="conversation-list"></div>
+  </section>
+
+  <main id="main-window" class="main-window">
+    <h1>Messages</h1>
+  </main>
 </body>
 
 </html>

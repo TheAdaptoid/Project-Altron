@@ -2,18 +2,17 @@
 
 Instead of paying $20/month for ChatGPT, I decided to improve my coding skills and learn new frameworks in an effort to build my own chatbot service.
 
-## Tech Stack
+# Tech Stack
 
 ### Frontend
 
-- Typescript
-- HTML
-- CSS
+- **UI Framework**: Vanilla w/ [TypeScript](https://www.typescriptlang.org/)
+- **Component Library**: [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
+- **Styling**:  [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
 ### Backend
 
-- **Language**: [Python](https://www.python.org/)
-- **Framework**: [FastAPI](https://fastapi.tiangolo.com/)
+- **API Framework**: [FastAPI](https://fastapi.tiangolo.com/)
 - **Database**: [SQLite](https://www.sqlite.org/)
 - **Testing**: [pytest](https://docs.pytest.org/en/latest/)
 
@@ -21,14 +20,10 @@ Instead of paying $20/month for ChatGPT, I decided to improve my coding skills a
 
 - [LMstudio](https://lmstudio.ai/)
 
-## Deployment Guide
+## Deployment Guides
 
-[Backend](backend/README.md#usage-instructions) deployment instructions
+[Backend](backend/README.md#usage-instructions) | [Frontend](frontend/README.md#usage-instructions)
 
-[Frontend](frontend/README.md#usage-instructions) deployment instructions
+## Design Decisions
 
-# Architecture Diagram
-
-# Data Flows
-
-# Design Decisions
+[Backend](backend/README.md#design-decisions) | [Frontend](frontend/README.md#design-decisions)

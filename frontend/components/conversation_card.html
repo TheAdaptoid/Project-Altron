@@ -1,0 +1,34 @@
+<div class="conversation-card">
+  <!-- Title, Time, and ID -->
+  <div class="conversation-card-divider">
+    <label id="conversation-title"></label>
+    <div id="hidden"></div>
+    <label id="conversation-time"></label>
+  </div>
+
+  <!-- Buttons -->
+  <div class="conversation-card-divider">
+    <button id="rename-conversation-button" class="standard-button">
+      Rename
+    </button>
+    <button id="delete-conversation-button" class="standard-button">
+      Delete
+    </button>
+  </div>
+
+  <!-- Deletion Dialog -->
+  <dialog id="delete-conversation-dialog">
+    <form method="dialog">
+      <p>Are you sure you want to delete this conversation?</p>
+      <button type="submit">Delete</button>
+    </form>
+  </dialog>
+
+  <!-- Rename Dialog -->
+  <dialog id="rename-conversation-dialog">
+    <form method="dialog">
+      <input type="text" id="rename-conversation-input" />
+      <button type="submit">Rename</button>
+    </form>
+  </dialog>
+</div>
