@@ -24,14 +24,6 @@ FRONTEND
 - **Component Library**: [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
 - **Styling**:  [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
-## TypeScript
-
-Enforce good habits and code maintainability.
-
-## HTML / CSS
-
-Beginner-friendly HTML and CSS.
-
 <br>
 
 # Usage Instructions
