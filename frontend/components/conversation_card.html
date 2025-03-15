@@ -1,34 +1,38 @@
 <div class="conversation-card">
   <!-- Title, Time, and ID -->
-  <div class="conversation-card-divider">
-    <label id="conversation-title"></label>
-    <div id="hidden"></div>
-    <label id="conversation-time"></label>
+  <div class="conversation-card-top">
+    <div class="conversation-card-top-divider conversation-card-top-left">
+      <label id="conversation-title"></label>
+    </div>
+
+    <div class="conversation-card-top-divider conversation-card-top-right">
+      <button id="rename-conversation-button" class="standard-button">
+        <i class="material-icons">edit</i>
+      </button>
+      <button id="delete-conversation-button" class="standard-button">
+        <i class="material-icons">delete</i>
+      </button>
+    </div>
   </div>
 
-  <!-- Buttons -->
-  <div class="conversation-card-divider">
-    <button id="rename-conversation-button" class="standard-button">
-      Rename
-    </button>
-    <button id="delete-conversation-button" class="standard-button">
-      Delete
-    </button>
+  <div class="conversation-card-bottom">
+    <label id="conversation-time"></label>
+    <div id="hidden"></div>
   </div>
 
   <!-- Deletion Dialog -->
-  <dialog id="delete-conversation-dialog">
+  <dialog id="delete-conversation-dialog" class="standard-dialog">
     <form method="dialog">
       <p>Are you sure you want to delete this conversation?</p>
-      <button type="submit">Delete</button>
+      <button class="standard-button" type="submit">Delete</button>
     </form>
   </dialog>
 
   <!-- Rename Dialog -->
-  <dialog id="rename-conversation-dialog">
+  <dialog id="rename-conversation-dialog" class="standard-dialog">
     <form method="dialog">
       <input type="text" id="rename-conversation-input" />
-      <button type="submit">Rename</button>
+      <button class="standard-button" type="submit">Rename</button>
     </form>
   </dialog>
 </div>

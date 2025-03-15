@@ -6,6 +6,8 @@ import {
   Conversation,
 } from "./requests.js";
 
+import { format_date_string } from "./utils.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   // Fetch conversations
   refresh_conversation_list();
@@ -38,8 +40,9 @@ async function refresh_conversation_list(): Promise<void> {
         .then((response) => response.text())
         .then((html) => {
           // Create a new conversation card
-          let conversation_card = document.createElement("div");
-          conversation_card.innerHTML = html;
+          let temp_div = document.createElement("div");
+          temp_div.innerHTML = html;
+          let conversation_card = temp_div.firstElementChild as HTMLElement;
 
           // Set the conversation title, time, and id
           (
@@ -49,7 +52,9 @@ async function refresh_conversation_list(): Promise<void> {
           ).textContent = conversation.title;
           (
             conversation_card.querySelector("#conversation-time") as HTMLElement
-          ).textContent = conversation.updated_at.toString().slice(11); // TODO: Find a better way to only display the date
+          ).textContent = format_date_string(
+            conversation.updated_at.toString()
+          );
           (
             conversation_card.querySelector("#hidden") as HTMLElement
           ).textContent = conversation.id.toString();

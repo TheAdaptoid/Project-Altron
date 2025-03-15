@@ -1,9 +1,10 @@
 :root {
-  --bg-color-1: #1e1e2f;
-  --bg-color-2: #39394c;
-  --fg-color-1: #5a5a7c;
-  --accent-color-1: #9d3f3f;
-  --accent-color-2: #e02e2e;
+  --bg-color-1: #070b18;
+  --bg-color-2: #b0b5c2;
+  --fg-color-1: #e8edfa;
+  --fg-color-2: #d9deea;
+  --accent-color-1: #0f3461;
+  --accent-color-2: #707581;
 }
 
 body {
@@ -20,17 +21,7 @@ body {
 
 /* Scrollbars */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--accent-color-1);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: #fff;
+  width: 0px;
 }
 
 /* Hidden elements, used for storing IDs */
@@ -51,20 +42,26 @@ body {
 }
 
 .standard-button {
-  background-color: var(--accent-color-1);
-  border: 1px solid var(--bg-color-1);
-  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  border-radius: 20px;
+
+  background-color: var(--fr-color-1);
 }
 
 .standard-button:hover {
-  border: 2px solid var(--accent-color-1);
+  cursor: pointer;
+  background-color: var(--accent-color-2);
 }
 
 .standard-button:active {
-  background-color: var(--accent-color-2);
+  background-color: var(--accent-color-1);
+}
+
+.standard-dialog {
+  border-radius: 20px;
+  background-color: var(--fg-color-1);
 }

@@ -30,7 +30,7 @@ export type Conversation = {
  * @throws Will throw an error if the conversation creation fails.
  */
 export async function create_conversation(): Promise<Conversation> {
-  const response = await fetch("http://localhost:8000/conversations/", {
+  const response = await fetch("http://localhost:8000/conversations", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export async function update_conversation(
   id: number,
   title: string
 ): Promise<Conversation> {
-  const response = await fetch(`http://localhost:8000/conversations/${id}/`, {
+  const response = await fetch(`http://localhost:8000/conversations/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export async function update_conversation(
  * @throws Will throw an error if the deletion fails.
  */
 export async function delete_conversation(id: number): Promise<void> {
-  const response = await fetch(`http://localhost:8000/conversations/${id}/`, {
+  const response = await fetch(`http://localhost:8000/conversations/${id}`, {
     method: "DELETE",
   });
 

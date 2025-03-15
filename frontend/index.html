@@ -7,27 +7,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/conversation_pane.css" />
-  <title>Document</title>
+  <link rel="stylesheet" href="styles/conversation_card.css" />
 
-  <!-- <script src="scripts/conversations.js"></script> -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <title>Altron</title>
+
   <script type="module" src="scripts/conversation_card.js"></script>
 </head>
 
 <body>
   <!-- Conversation Pane -->
-  <section class="conversation-panel" id="conversation-panel">
+  <div class="conversation-panel" id="conversation-panel">
 
     <!-- Conversation Pane Header -->
-    <div class="conversation-start-div">
+    <button class="conversation-panel-header" id="start-conversation-button" class="standard-button">
       <h3>Start Conversation</h3>
-      <button id="start-conversation-button" class="standard-button">
-        +
-      </button>
-    </div>
+    </button>
 
     <!-- Conversation List -->
     <div class="conversation-list" id="conversation-list"></div>
-  </section>
+  </div>
 
   <main id="main-window" class="main-window">
     <h1>Messages</h1>

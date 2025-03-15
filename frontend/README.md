@@ -6,8 +6,10 @@ FRONTEND
  ┃  ┗ conversation_card.html
  ┣ scripts # TypeScript files
  ┃  ┣ conversation_card.ts
- ┃  ┗ requests.ts
+ ┃  ┣ requests.ts
+ ┃  ┗ utils.ts
  ┣ styles # CSS files
+ ┃  ┣ conversation_card.css
  ┃  ┣ conversation_pane.css
  ┃  ┗ main.css
  ┣ index.html # Root HTML file
