@@ -81,10 +81,6 @@ The decision to use `PATCH` instead of `PUT` was made with the assumption and ex
 
 # Database and Model Reference
 
-## UML Diagram
-
-![UML](../assets/UML.png)
-
 ## Conversation
 
 Represents a conversation between the user and the agent.
