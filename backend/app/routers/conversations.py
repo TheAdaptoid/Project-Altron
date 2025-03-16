@@ -11,6 +11,7 @@ conversations are not found or when request validation fails.
 
 # Standard Libraries
 from collections.abc import Sequence
+from typing import Any
 
 # External Libraries
 from fastapi import APIRouter, HTTPException, Depends
@@ -19,6 +20,7 @@ from sqlmodel import Session, select
 # Internal Libraries
 from app import models
 from app.database import get_db
+from app.logger.logger import logger
 
 router = APIRouter(
     prefix="/conversations",
@@ -33,30 +35,56 @@ def create_conversation(
 ):
     """
     API Endpoint for creating a new conversation.
-    Takes a ConversationCreate pydantic model as input.
-    This model will contain only a title.
-    The rest of the fields will be auto-generated.
 
     Args:
         conversation (models.ConversationCreate): The data model for creating a new conversation.
         db (Session, optional): The database session used to commit the conversation.
             Defaults to Depends(get_db).
 
+    Raises:
+        HTTPException (400): Raised if the conversation data is invalid.
+        HTTPException (500): Raised if there is an error creating the conversation.
+
     Returns:
         models.Conversation: The newly created conversation.
     """
-    # Create a new conversation in memory
-    db_conversation: models.ConversationTable = models.ConversationTable.model_validate(
-        conversation
-    )
+    logger.info("Creating conversation...")
+    logger.debug("Creating conversation: %s", conversation.model_dump())
 
-    # Commit the conversation to the database
-    db.add(db_conversation)
-    db.commit()
+    try:
+        # Create a new conversation in memory
+        try:
+            db_conversation: models.ConversationTable = (
+                models.ConversationTable.model_validate(conversation)
+            )
+        except Exception as e:
+            raise HTTPException(
+                status_code=400, detail="Invalid conversation data"
+            ) from e
 
-    # Refresh the database and return the new conversation
-    db.refresh(db_conversation)
-    return db_conversation
+        # Commit the conversation to the database
+        try:
+            db.add(db_conversation)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status_code=500, detail="Error creating conversation"
+            ) from e
+
+        # Refresh the database and return the new conversation
+        db.refresh(db_conversation)
+        return db_conversation
+
+    except HTTPException as e:
+        logger.error("Error creating conversation: %s", e)
+        raise e from e
+
+    except Exception as e:
+        logger.error("Error creating conversation: %s", e)
+        raise HTTPException(
+            status_code=500, detail="Error creating conversation"
+        ) from e
 
 
 @router.get("/", response_model=list[models.ConversationRead])
@@ -64,6 +92,7 @@ def read_conversations(skip: int = 0, limit: int = 10, db: Session = Depends(get
     """
     API Endpoint for retrieving multiple conversations.
     Returns a paginated list of conversations.
+    Conversations are sorted by update time.
 
     Args:
         skip (int, optional): The number of conversations to skip.
@@ -73,15 +102,42 @@ def read_conversations(skip: int = 0, limit: int = 10, db: Session = Depends(get
         db (Session, optional): The database session used to retrieve the conversations.
             Defaults to Depends(get_db).
 
+    Raises:
+        HTTPException (400): Raised if the skip or limit parameters are invalid.
+        HTTPException (500): Raised if there is an error reading the conversations.
+
     Returns:
-        list[models.Conversation]: The list of conversations.
+        list[models.ConversationRead]: The list of conversations.
     """
-    conversations: Sequence[models.ConversationTable] = db.exec(select(models.ConversationTable).offset(skip).limit(limit)).all()
-    
-    # Sort the conversations by update time
-    conversations = sorted(conversations, key=lambda c: c.updated_at, reverse=True)
-    
-    return conversations
+    logger.info("Reading conversations...")
+    logger.debug("Reading conversations: skip=%s, limit=%s", skip, limit)
+
+    try:
+        # Validate the request parameters
+        if skip < 0 or limit < 0:
+            raise HTTPException(
+                status_code=400, detail="Invalid skip or limit parameters"
+            )
+
+        # Retrieve the conversations from the database
+        conversations: Sequence[models.ConversationTable] = db.exec(
+            select(models.ConversationTable).offset(skip).limit(limit)
+        ).all()
+
+        # Sort the conversations by update time
+        conversations = sorted(conversations, key=lambda c: c.updated_at, reverse=True)
+
+        return conversations
+
+    except HTTPException as e:
+        logger.error("Error reading conversations: %s", e)
+        raise e from e
+
+    except Exception as e:
+        logger.error("Error reading conversations: %s", e)
+        raise HTTPException(
+            status_code=500, detail="Error reading conversations"
+        ) from e
 
 
 @router.get("/{conversation_id}", response_model=models.ConversationRead)
@@ -95,19 +151,32 @@ def read_conversation(conversation_id: int, db: Session = Depends(get_db)):
             Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: Raised if the conversation is not found.
+        HTTPException (404): Raised if the conversation is not found.
+        HTTPException (500): Raised if there is an error reading the conversation.
 
     Returns:
-        models.Conversation: The retrieved conversation.
+        models.ConversationRead: The retrieved conversation.
     """
-    # Retrieve the conversation from the database
-    conversation = db.get(models.ConversationTable, conversation_id)
+    logger.info("Reading conversation...")
+    logger.debug("Reading conversation: %s", conversation_id)
 
-    # Verify that the conversation exists
-    if not conversation:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+    try:
+        # Retrieve the conversation from the database
+        conversation = db.get(models.ConversationTable, conversation_id)
 
-    return conversation
+        # Verify that the conversation exists
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+
+        return conversation
+
+    except HTTPException as e:
+        logger.error("Error reading conversation: %s", e)
+        raise e from e
+
+    except Exception as e:
+        logger.error("Error reading conversation: %s", e)
+        raise HTTPException(status_code=500, detail="Error reading conversation") from e
 
 
 @router.patch("/{conversation_id}", response_model=models.ConversationRead)
@@ -126,29 +195,61 @@ def update_conversation(
             Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: Raised if the conversation is not found.
+        HTTPException (400): Raised if there are no fields to update in the conversation.
+        HTTPException (404): Raised if the conversation is not found.
+        HTTPException (500): Raised if there is an error updating the conversation.
 
     Returns:
-        models.Conversation: The updated conversation.
+        models.ConversationRead: The updated conversation.
     """
-    # Retrieve the conversation from the database
-    conversation_from_db = db.get(models.ConversationTable, conversation_id)
+    logger.info("Updating conversation...")
+    logger.debug("Updating conversation: %s", conversation_id)
 
-    # Verify that the conversation exists
-    if not conversation_from_db:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+    try:
+        # Retrieve the conversation from the database
+        conversation_from_db = db.get(models.ConversationTable, conversation_id)
 
-    # Update the conversation in memory
-    conversation_data: dict = update_details.model_dump(exclude_unset=True)
-    conversation_from_db.sqlmodel_update(conversation_data)
+        # Verify that the conversation exists
+        if not conversation_from_db:
+            raise HTTPException(status_code=404, detail="Conversation not found")
 
-    # Commit the changes to the database
-    db.add(conversation_from_db)
-    db.commit()
+        # Update the conversation in memory
+        conversation_data: dict[str, Any] = update_details.model_dump(
+            exclude_unset=True
+        )
 
-    # Refresh the database and return the updated conversation
-    db.refresh(conversation_from_db)
-    return conversation_from_db
+        # Verify that there are fields to update
+        if not conversation_data:
+            raise HTTPException(
+                status_code=400, detail="No fields to update in conversation"
+            )
+
+        # Update the conversation in the database
+        conversation_from_db.sqlmodel_update(conversation_data)
+
+        # Commit the changes to the database
+        try:
+            db.add(conversation_from_db)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status_code=500, detail="Error updating conversation"
+            ) from e
+
+        # Refresh the database and return the updated conversation
+        db.refresh(conversation_from_db)
+        return conversation_from_db
+
+    except HTTPException as e:
+        logger.error("Error updating conversation: %s", e)
+        raise e from e
+
+    except Exception as e:
+        logger.error("Error updating conversation: %s", e)
+        raise HTTPException(
+            status_code=500, detail="Error updating conversation"
+        ) from e
 
 
 @router.delete("/{conversation_id}", response_model=dict[str, int | str])
@@ -162,24 +263,44 @@ def delete_conversation(conversation_id: int, db: Session = Depends(get_db)):
             Defaults to Depends(get_db).
 
     Raises:
-        HTTPException: Raised if the conversation is not found.
+        HTTPException (404): Raised if the conversation is not found.
+        HTTPException (500): Raised if there is an error deleting the conversation.
 
     Returns:
-        dict[str, str]: A dictionary containing a success message.
+        dict[str, str | int]: A dictionary containing a success message and the conversation ID.
     """
-    # Retrieve the conversation from the database
-    conversation = db.get(models.ConversationTable, conversation_id)
+    logger.info("Deleting conversation...")
+    logger.debug("Deleting conversation: %s", conversation_id)
 
-    # Verify that the conversation exists
-    if not conversation:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+    try:
+        # Retrieve the conversation from the database
+        conversation = db.get(models.ConversationTable, conversation_id)
 
-    # Delete the conversation
-    db.delete(conversation)
+        # Verify that the conversation exists
+        if not conversation:
+            raise HTTPException(status_code=404, detail="Conversation not found")
 
-    # Commit the changes and return a success message
-    db.commit()
-    return {
-        "conversation_id": conversation_id,
-        "message": "Conversation deleted successfully",
-    }
+        # Delete the conversation
+        try:
+            db.delete(conversation)
+            db.commit()
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(
+                status_code=500, detail="Error deleting conversation"
+            ) from e
+
+        return {
+            "conversation_id": conversation_id,
+            "message": "Conversation deleted successfully",
+        }
+
+    except HTTPException as e:
+        logger.error("Error deleting conversation: %s", e)
+        raise e from e
+
+    except Exception as e:
+        logger.error("Error deleting conversation: %s", e)
+        raise HTTPException(
+            status_code=500, detail="Error deleting conversation"
+        ) from e

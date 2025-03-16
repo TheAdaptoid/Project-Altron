@@ -71,6 +71,11 @@ The decision to use `PATCH` instead of `PUT` was made with the assumption and ex
 | /conversation/{id} | GET    | Retrieve an existing conversation                                |
 | /conversation/{id} | PATCH  | Update an existing conversation                                  |
 | /conversation/{id} | DELETE | Delete an existing conversation, and **all** associated messages |
+| /message           | POST   | Create a new message                                             |
+| /message           | GET    | Retrieve all existing messages for a specific conversation       |
+| /message/{id}      | GET    | Retrieve an existing message                                     |
+| /message/{id}      | PATCH  | Update an existing message                                       |
+| /message/{id}      | DELETE | Delete an existing message                                       |
 
 <br>
 
@@ -96,15 +101,15 @@ Serves as the main foriegn key of `Messages` to link them together.
 
 Represents a message from either the user or the agent.
 
-| Field           | Type     | Mutable | Description                   |
-| --------------- | -------- | ------- | ----------------------------- |
-| id              | int      | False   | Primary key                   |
-| conversation_id | int      | False   | Foreign key to `Conversation` |
-| content         | str      | True    | Content of the message        |
-| created_at      | datetime | False   | Timestamp of creation         |
+| Field           | Type     | Mutable | Description                                             |
+| --------------- | -------- | ------- | ------------------------------------------------------- |
+| id              | int      | False   | Primary key                                             |
+| conversation_id | int      | False   | Foreign key to `Conversation`                           |
+| role            | str      | True    | Role (user, system, or assistant) of the message sender |
+| text            | str      | True    | Text Content of the message                             |
+| created_at      | datetime | False   | Timestamp of creation                                   |
+| updated_at      | datetime | False   | Timestamp of last update                                |
 
 <br>
 
 # Development Notes and Future Improvements
-
-- Start logging events.

@@ -1,0 +1,33 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s | Time: %(asctime)s | Module: %(module)s | Process: %(process)d - %(thread)d | Message: %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        },
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "app/logger/altron_api.log",
+            "formatter": "verbose"
+        }
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": true
+        },
+        "gunicorn.error": {
+            "level": "DEBUG",
+            "propagate": true
+        }
+    }
+}

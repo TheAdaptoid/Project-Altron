@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 # Internal Libraries
 # Imported to register all nested models for the `create_db_and_tables` function
 from app import models
+from app.logger.logger import logger
 
 # Load environment variables
 load_dotenv()
@@ -42,12 +43,30 @@ def get_db() -> Generator[Session, None, None]:
     Yields:
         Generator[Session, None, None]: A generator that yields a database session.
     """
-    with Session(ENGINE) as session:
-        yield session
+    try:
+        logger.info("Creating database session...")
+        with Session(ENGINE) as session:
+
+            try:
+                yield session
+
+            except Exception as e:
+                logger.error("Error occurred during database session: %s", e)
+                raise e from e
+
+    except Exception as e:
+        logger.error("Error creating database session: %s", e)
+        raise e from e
 
 
 def create_db_and_tables() -> None:
     """
     Creates the database and tables if they don't exist.
     """
-    SQLModel.metadata.create_all(bind=ENGINE)
+    try:
+        logger.info("Creating database and tables...")
+        SQLModel.metadata.create_all(bind=ENGINE)
+
+    except Exception as e:
+        logger.error("Error creating database and tables: %s", e)
+        raise e from e
