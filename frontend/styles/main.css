@@ -30,15 +30,9 @@ body {
   position: absolute;
 }
 
-.main-window {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  background-color: var(--bg-color-1);
-
-  width: 100%;
-  z-index: 1;
+.hidden {
+  visibility: hidden;
+  position: absolute;
 }
 
 .standard-button {
@@ -49,7 +43,7 @@ body {
 
   border-radius: 20px;
 
-  background-color: var(--fr-color-1);
+  background-color: var(--fg-color-1);
 }
 
 .standard-button:hover {

@@ -22,6 +22,34 @@ export type Conversation = {
 };
 
 /**
+ * The type `Message` represents a message with properties including id, conversation_id, role, text,
+ * created_at, and updated_at.
+ * @property {number} id - The `id` property in the `Message` type represents a unique identifier for
+ * each message. It is typically a number used to distinguish one message from another.
+ * @property {number} conversation_id - The `conversation_id` property in the `Message` type
+ * represents the unique identifier of the conversation to which the message belongs. It is a number
+ * that links the message to a specific conversation.
+ * @property {string} role - The `role` property in the `Message` type represents the role of the
+ * message sender. It can have one of the following values: "user", "assistant", or "system".
+ * @property {string} text - The `text` property in the `Message` type represents the text content of
+ * the message. It is a string type field where you can provide the actual text of the message.
+ * @property {Date} created_at - The `created_at` property in the `Message` type represents the date
+ * and time when the message was created. It is of type `Date`, which stores the timestamp of when the
+ * message was sent.
+ * @property {Date} updated_at - The `updated_at` property in the `Message` type represents the date
+ * and time when the message was last updated. This property is of type `Date`, which stores both the
+ * date and time information. It is used to track the most recent update made to the message.
+ */
+export type Message = {
+  id: number;
+  conversation_id: number;
+  role: string;
+  text: string;
+  created_at: Date;
+  updated_at: Date;
+};
+
+/**
  * The function `create_conversation` sends a POST request to create a new conversation and returns the
  * newly created conversation object.
  *
@@ -75,6 +103,25 @@ export async function retrieve_conversations(
 }
 
 /**
+ * The function `retrieve_conversation` sends a GET request to retrieve a conversation with the specified
+ * ID and returns the conversation object.
+ *
+ * @param {number} id - The ID of the conversation to retrieve.
+ * @returns {Promise<Conversation>} A Promise that resolves to a `Conversation` object.
+ * @throws Will throw an error if the retrieval fails.
+ */
+export async function retrieve_conversation(id: number): Promise<Conversation> {
+  const response = await fetch(`http://localhost:8000/conversations/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to retrieve conversation");
+  }
+
+  const conversation: Conversation = await response.json();
+  return conversation;
+}
+
+/**
  * The function `update_conversation` sends a PATCH request to update the title of an existing conversation
  * with the specified ID and returns the updated conversation object.
  *
@@ -118,4 +165,44 @@ export async function delete_conversation(id: number): Promise<void> {
   if (!response.ok) {
     throw new Error("Failed to delete conversation");
   }
+}
+
+export async function create_message(
+  conversation_id: number,
+  text: string
+): Promise<Message> {
+  const response = await fetch(
+    `http://localhost:8000/conversations/${conversation_id}/messages`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to create message");
+  }
+
+  const message: Message = await response.json();
+  return message;
+}
+
+export async function retrieve_messages(
+  conversation_id: number,
+  skip: number = 0,
+  limit: number = 10
+): Promise<Message[]> {
+  const response = await fetch(
+    `http://localhost:8000/messages/?skip=${skip}&limit=${limit}&conversation_id=${conversation_id}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to retrieve messages");
+  }
+
+  const messages: Message[] = await response.json();
+  return messages;
 }

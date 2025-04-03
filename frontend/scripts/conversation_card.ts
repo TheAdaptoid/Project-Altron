@@ -4,20 +4,26 @@ import {
   update_conversation,
   delete_conversation,
   Conversation,
+  retrieve_messages,
+  Message,
 } from "./requests.js";
 
 import { format_date_string } from "./utils.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Fetch conversations
-  refresh_conversation_list();
+document.addEventListener("DOMContentLoaded", async () => {
+  // Fetch conversations for the side panel
+  await refresh_conversation_list();
+
+  // Fetch the first conversation
+  const convo_on_load: Conversation[] = await retrieve_conversations(0, 1);
+  await refresh_conversation_window(convo_on_load[0].id);
 
   // Link start conversation button
   const start_conversation_button = document.getElementById(
     "start-conversation-button"
   ) as HTMLButtonElement | null;
-  start_conversation_button?.addEventListener("click", () => {
-    start_new_conversation();
+  start_conversation_button?.addEventListener("click", async () => {
+    await start_new_conversation();
   });
 });
 
@@ -32,7 +38,7 @@ async function refresh_conversation_list(): Promise<void> {
 
   try {
     // Retrieve the first 10 conversations
-    const conversations = await retrieve_conversations(0, 50);
+    const conversations = await retrieve_conversations(0, 20);
 
     // Create ui elements for each conversation
     conversations.forEach((conversation: Conversation) => {
@@ -58,6 +64,11 @@ async function refresh_conversation_list(): Promise<void> {
           (
             conversation_card.querySelector("#hidden") as HTMLElement
           ).textContent = conversation.id.toString();
+
+          // Set event listener for click
+          conversation_card.addEventListener("click", async () => {
+            await refresh_conversation_window(conversation.id);
+          });
 
           // Set event listener for delete button
           const delete_button = conversation_card.querySelector(
@@ -182,5 +193,61 @@ async function remove_conversation(
 
     // Close the dialog
     delete_dialog.close();
+  });
+}
+
+async function refresh_conversation_window(
+  conversation_id: number
+): Promise<void> {
+  // TODO: Open conversation window
+  const conversation_window = document.getElementById("conversation-window");
+
+  // Load messages
+  const messages: Message[] = await retrieve_messages(conversation_id);
+
+  // Clear the conversation window
+  conversation_window!.innerHTML = "";
+
+  // Create ui elements for each message
+  messages.forEach((message: Message) => {
+    fetch("./components/message.html")
+      .then((response) => response.text())
+      .then((html) => {
+        // Create a new message card
+        let temp_div = document.createElement("div");
+        temp_div.innerHTML = html;
+        let message_card = temp_div.firstElementChild as HTMLElement;
+
+        // Set the message id
+        (message_card.querySelector("#message-id") as HTMLElement).textContent =
+          message.id.toString();
+
+        // Set the message role
+        (
+          message_card.querySelector("#message-role") as HTMLElement
+        ).textContent = message.role;
+
+        // Set the message text
+        (
+          message_card.querySelector("#message-text") as HTMLElement
+        ).textContent = message.text;
+
+        // Set the message creation time
+        (
+          message_card.querySelector("#message-created-at") as HTMLElement
+        ).textContent = message.created_at.toString();
+
+        // Set styles depending on message role
+        if (message.role === "user") {
+          message_card.classList.add("user-message");
+        } else if (message.role === "assistant") {
+          message_card.classList.add("assistant-message");
+        } else {
+          message_card.classList.add("system-message");
+        }
+
+        // Append the message card to the conversation window
+        conversation_window!.appendChild(message_card);
+      });
   });
 }

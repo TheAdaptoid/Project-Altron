@@ -8,12 +8,15 @@
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/conversation_pane.css" />
   <link rel="stylesheet" href="styles/conversation_card.css" />
+  <link rel="stylesheet" href="styles/conversation_io.css" />
+  <link rel="stylesheet" href="styles/message.css" />
 
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <title>Altron</title>
 
   <script type="module" src="scripts/conversation_card.js"></script>
+  <script type="module" src="scripts/user_input.js"></script>
 </head>
 
 <body>
@@ -30,7 +33,24 @@
   </div>
 
   <main id="main-window" class="main-window">
-    <h1>Messages</h1>
+    <div id="conversation-window" class="conversation-window"></div>
+
+    <form id="conversation-input" class="conversation-input">
+      <div class="conversation-input-top">
+        <textarea id="conversation-input-text" autocomplete="on" autofocus="true" form="conversation-input"
+          name="conversation-input-text" placeholder="Say hi..."></textarea>
+      </div>
+
+      <div class="conversation-input-bottom">
+        <button type="button" id="conversation-attachment-button" class="standard-button">
+          <i class="material-icons">attach_file</i>
+        </button>
+
+        <button type="submit" form="conversation-input" id="conversation-send-button" class="standard-button">
+          <i class="material-icons">send</i>
+        </button>
+      </div>
+    </form>
   </main>
 </body>
 

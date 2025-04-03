@@ -96,7 +96,7 @@ def read_messages(
     """
     API Endpoint for retrieving multiple messages.
     Returns a paginated list of messages.
-    Messages are sorted by update time.
+    Messages are sorted by creation time.
 
     Args:
         conversation_id (int): The ID of the conversation to retrieve messages for.
@@ -140,8 +140,8 @@ def read_messages(
             .limit(limit)
         ).all()
 
-        # Sort the messages by update time
-        messages = sorted(messages, key=lambda m: m.updated_at, reverse=True)
+        # Sort the messages by creation time
+        messages = sorted(messages, key=lambda m: m.created_at, reverse=True)
 
         return messages
 

@@ -21,7 +21,7 @@
   z-index: 2;
   position: absolute;
 
-  transition: width 0.5s ease-in-out;
+  transition: width 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 
 .conversation-panel:hover {
@@ -31,7 +31,7 @@
 .conversation-panel * {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s cubic-bezier(.51, -0.8, .87, .61);
 }
 
 .conversation-panel:hover * {

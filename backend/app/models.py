@@ -23,9 +23,9 @@ class Role(str, Enum):
         SYSTEM - The role of the system.
     """
 
-    USER = "user"
-    ASSISTANT = "assistant"
-    SYSTEM = "system"
+    user = "user"
+    assistant = "assistant"
+    system = "system"
 
 
 class ConversationBase(SQLModel):
